@@ -263,6 +263,7 @@ export default {
   },
   methods: {
     moment,
+  
     checkBooked(room, date) {
       var bookedRoom = [];
       if (this.booking_rooms && room) {

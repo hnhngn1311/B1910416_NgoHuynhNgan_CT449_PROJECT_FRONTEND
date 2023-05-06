@@ -20,10 +20,21 @@
         </div>
         <div class="modal-body">Xác nhận xoá {{ item.name }}</div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-danger" data-bs-dismiss="modal" @click="removeRoom">
+          <button
+            type="button"
+            class="btn btn-danger"
+            data-bs-dismiss="modal"
+            @click="removeRoom"
+          >
             Xoá
           </button>
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Đóng
+          </button>
         </div>
       </div>
     </div>
@@ -72,6 +83,7 @@
             class="btn-close"
             data-bs-dismiss="modal"
             aria-label="Close"
+            @click="onHide"
           ></button>
         </div>
         <form class="d-flex flex-column" @submit.prevent="createRoom">
@@ -85,50 +97,53 @@
 </template>
 
 <script>
-import { toast } from 'vue3-toastify'
-import FormBookingComponent from '../../../../components/FormBookingComponent.vue'
-import BaseAPI from '../../../../config/axios.js'
+import { toast } from "vue3-toastify";
+import FormBookingComponent from "../../../../components/FormBookingComponent.vue";
+import BaseAPI from "../../../../config/axios.js";
 
 export default {
   components: { FormBookingComponent },
-  props: ['item', 'status'],
-  emits: ['refreshData'],
+  props: ["item", "status"],
+  emits: ["refreshData"],
   data() {
     return {
-      titleConfirm: 'Xoá lịch đặt phòng',
-      titleEdit: 'Chỉnh sửa thông tin đặt phòng',
-      titleCreate: 'Thêm lịch đặt phòng',
-      rooms: []
-    }
+      titleConfirm: "Xoá lịch đặt phòng",
+      titleEdit: "Chỉnh sửa thông tin đặt phòng",
+      titleCreate: "Thêm lịch đặt phòng",
+      rooms: [],
+    };
   },
   methods: {
+    onHide() {
+      this.$router.push("/adminstrator/booking_room");
+    },
     removeRoom() {
-      BaseAPI.delete('/booking_room/' + this.item._id)
+      BaseAPI.delete("/booking_room/" + this.item._id)
         .then(() => {
-          toast('Xoá ' + this.item.name + ' thành công', {
+          toast("Xoá " + this.item.name + " thành công", {
             autoClose: 1000,
-            position: 'bottom-right'
-          })
-          this.$emit('refreshData')
+            position: "bottom-right",
+          });
+          this.$emit("refreshData");
         })
-        .catch((err) => console.log(err))
+        .catch((err) => console.log(err));
     },
     editRoom() {
       BaseAPI.put(`/booking_room/${this.item._id}`, this.item).then((res) => {
         toast(`Sửa thông tin phòng ${this.item.name}`, {
           autoClose: 1000,
-          position: 'bottom-right'
-        })
-        this.$emit('refreshData')
-      })
-    }
+          position: "bottom-right",
+        });
+        this.$emit("refreshData");
+      });
+    },
   },
   mounted() {
-    BaseAPI.get('/booking_room/get-rooms')
+    BaseAPI.get("/booking_room/get-rooms")
       .then((res) => (this.rooms = res.data))
-      .catch((err) => console.log(err))
-  }
-}
+      .catch((err) => console.log(err));
+  },
+};
 </script>
 
 <style scoped></style>
