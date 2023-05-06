@@ -12,11 +12,16 @@
           placeholder="Nhập thông tin tìm kiếm"
           aria-label="Button"
           aria-describedby=""
+          v-model="searchingText"
         />
-        <button class="btn btn-outline-secondary" type="button" id="">Tìm kiếm</button>
       </div>
-      <select class="form-select form-select-md" v-model="typeSelected" name="" id="">
-        <option value="">Loại phòng</option>
+      <select
+        class="form-select form-select-md"
+        v-model="typeSelected"
+        name=""
+        id=""
+      >
+        <option selected value="">Tất cả</option>
         <option v-for="item in roomType" :value="item.name" :key="item.id">
           {{ item.name }}
         </option>
@@ -36,7 +41,10 @@
     </div>
   </div>
   <div class="p-3 bg-light mt-3 shadow-lg rounded">
-    <div class="d-flex h-50 justify-content-center align-items-end" v-if="rooms.length === 0">
+    <div
+      class="d-flex h-50 justify-content-center align-items-end"
+      v-if="rooms.length === 0"
+    >
       <div class="d-flex flex-column gap-2">
         <span>Không có phòng nào để hiển thị</span>
         <button
@@ -60,11 +68,20 @@
             <th>Tên Phòng</th>
             <th>Loại phòng</th>
             <th>Mô tả</th>
-            <th>{{ typeSelected }}</th>
+            <th></th>
           </tr>
         </thead>
         <tbody class="table-group-divider">
-          <tr v-for="item in rooms" :key="item._id">
+          <tr
+            v-for="item in typeSelected == '' && searchingText == ''
+              ? rooms
+              : rooms.filter(
+                  (e) =>
+                    e.type == typeSelected &&
+                    e.desc.toLowerCase().includes(searchingText.toLowerCase())
+                )"
+            :key="item._id"
+          >
             <td scope="row">{{ item.name }}</td>
             <td>{{ item.type }}</td>
             <td>{{ item.desc }}</td>
@@ -108,43 +125,48 @@
       </table>
     </div>
   </div>
-  <ModalRoom :item="itemSelected" :roomType="roomType" @refreshData="fetchData" />
+  <ModalRoom
+    :item="itemSelected"
+    :roomType="roomType"
+    @refreshData="fetchData"
+  />
 </template>
 
 <script>
-import BaseAPI from '@/config/axios.js'
-import ModalRoom from '@/views/admin/components/modals/RoomModel.vue'
+import BaseAPI from "@/config/axios.js";
+import ModalRoom from "@/views/admin/components/modals/RoomModel.vue";
 export default {
   components: { ModalRoom },
   data() {
     return {
       rooms: [],
       itemSelected: {},
-      typeSelected: '',
+      typeSelected: "",
+      searchingText: "",
       roomType: [
-        { id: 1, name: 'Lý thuyết' },
-        { id: 2, name: 'Lab' },
-        { id: 3, name: 'Hội trường' }
-      ]
-    }
+        { id: 1, name: "Lý thuyết" },
+        { id: 2, name: "Lab" },
+        { id: 3, name: "Hội trường" },
+      ],
+    };
   },
   methods: {
     moment(date) {
-      return moment(new Date(date)).format('DD-MM-yyyy')
+      return moment(new Date(date)).format("DD-MM-yyyy");
     },
     setSelectedItem(item) {
-      this.itemSelected = { ...item }
+      this.itemSelected = { ...item };
     },
     fetchData() {
-      BaseAPI.get('/rooms')
+      BaseAPI.get("/rooms")
         .then(({ data }) => (this.rooms = data))
-        .catch((err) => console.log(err))
-    }
+        .catch((err) => console.log(err));
+    },
   },
   mounted() {
-    this.fetchData()
-  }
-}
+    this.fetchData();
+  },
+};
 </script>
 
 <style scoped></style>

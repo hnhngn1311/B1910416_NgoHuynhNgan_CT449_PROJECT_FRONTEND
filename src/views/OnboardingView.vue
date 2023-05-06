@@ -29,35 +29,52 @@
             v-model="data.password"
           />
         </div>
-        <button type="button" class="btn btn-primary mt-2" @click="sign_in">ĐĂNG NHẬP</button>
+        <button type="button" class="btn btn-primary mt-2" @click="sign_in">
+          ĐĂNG NHẬP
+        </button>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import accountServices from '@/services/account.services.js'
+import { toast } from "vue3-toastify";
+import BaseAPI from "../config/axios";
 
 export default {
   data() {
     return {
       data: {
-        username: '',
-        password: ''
-      }
-    }
+        username: "",
+        password: "",
+      },
+    };
   },
   methods: {
     sign_in() {
-      accountServices.signIn(this.data)
-    }
-  }
-}
+      BaseAPI.post("/accounts/", this.data)
+        .then((res) => {
+          if (res.data) {
+            const response = res.data;
+            if (response.role == "Quản trị viên") {
+              localStorage.setItem("user", JSON.stringify(response.username));
+              const redirect = this.$route.query.redirect || "/adminstrator";
+              this.$router.push(redirect);
+              toast("Đăng nhập thành công", {
+                autoClose: 1000,
+              });
+            }
+          }
+        })
+        .catch((err) => console.log(err));
+    },
+  },
+};
 </script>
 
 <style scoped>
 .wrapper {
-  background-image: url('@/assets/package.jpg');
+  background-image: url("@/assets/package.jpg");
   display: flex;
   position: relative;
   height: 100vh;

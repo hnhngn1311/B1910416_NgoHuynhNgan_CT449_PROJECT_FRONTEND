@@ -12,15 +12,9 @@
           placeholder="Nhập thông tin tìm kiếm"
           aria-label="Button"
           aria-describedby=""
+          v-model="searchString"
         />
-        <button class="btn btn-outline-secondary" type="button" id="">Tìm kiếm</button>
       </div>
-      <select class="form-select form-select-md" v-model="typeSelected" name="" id="">
-        <option value="">Trạng thái</option>
-        <option v-for="item in status" :value="item.name" :key="item.id">
-          {{ item.name }}
-        </option>
-      </select>
     </div>
     <hr />
     <div class="d-flex justify-content-start">
@@ -64,11 +58,21 @@
             <th>Bắt đầu</th>
             <th>Kết thúc</th>
             <th>Nội dung đặt phòng</th>
-            <th>{{ typeSelected }}</th>
+            <th></th>
           </tr>
         </thead>
         <tbody class="table-group-divider">
-          <tr v-for="item in booking_room" :key="item._id">
+          <tr
+            v-for="item in searchString == ''
+              ? booking_room
+              : booking_room.filter((e) =>
+                  e.room
+                    .toString()
+                    .toLowerCase()
+                    .includes(searchString.toLowerCase())
+                )"
+            :key="item._id"
+          >
             <td>{{ item.room }}</td>
             <td>{{ moment(item.startDate) }}</td>
             <td>{{ moment(item.endDate) }}</td>
@@ -116,40 +120,43 @@
   <ModalRoom :item="itemSelected" :status="status" @refreshData="fetchData" />
 </template>
 <script>
-import BaseAPI from '@/config/axios.js'
-import ModalRoom from '@/views/admin/components/modals/BookingRoomModal.vue'
-import moment from 'moment'
+import BaseAPI from "@/config/axios.js";
+import ModalRoom from "@/views/admin/components/modals/BookingRoomModal.vue";
+import moment from "moment";
 export default {
   components: { ModalRoom },
   data() {
     return {
       booking_room: [],
       itemSelected: {},
-      typeSelected: '',
+      searchString: "",
       status: [
-        { id: 1, name: 'Đang xử lý' },
-        { id: 2, name: 'Đã đặt' },
-        { id: 3, name: 'Đã từ chối' }
-      ]
-    }
+        { id: 1, name: "Đang xử lý" },
+        { id: 2, name: "Đã đặt" },
+        { id: 3, name: "Đã từ chối" },
+      ],
+    };
   },
   methods: {
     moment(date) {
-      return moment(new Date(date)).format('DD-MM-yyyy hh:ss')
+      return moment(new Date(date)).format("DD-MM-yyyy HH:mm");
     },
     setSelectedItem(item) {
-      this.itemSelected = { ...item }
+      this.itemSelected = { ...item };
     },
     fetchData() {
-      BaseAPI.get('/booking_room')
-        .then(({ data }) => (this.booking_room = data))
-        .catch((err) => console.log(err))
-    }
+      BaseAPI.get("/booking_room")
+        .then(({ data }) => {
+          this.booking_room = data;
+          console.log(JSON.stringify(this.booking_room, 0, 2));
+        })
+        .catch((err) => console.log(err));
+    },
   },
   mounted() {
-    this.fetchData()
-  }
-}
+    this.fetchData();
+  },
+};
 </script>
 
 <style scoped></style>

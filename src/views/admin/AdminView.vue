@@ -8,12 +8,12 @@
 </template>
 
 <script>
-import Sidebar from '@/views/admin/components/Sidebar.vue'
-import { RouterView } from 'vue-router'
+import Sidebar from "@/views/admin/components/Sidebar.vue";
+import { RouterView } from "vue-router";
 
 export default {
-  components: { Sidebar, RouterView }
-}
+  components: { Sidebar, RouterView },
+};
 </script>
 
 <style scoped>

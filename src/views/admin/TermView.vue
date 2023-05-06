@@ -5,19 +5,14 @@
   </div>
   <div class="d-flex flex-column bg-light p-3 shadow-lg rounded">
     <div class="d-flex gap-2">
-      <div class="input-group">
-        <input
-          type="text"
-          class="form-control"
-          placeholder="Nhập thông tin tìm kiếm"
-          aria-label="Button"
-          aria-describedby=""
-        />
-        <button class="btn btn-outline-secondary" type="button" id="">Tìm kiếm</button>
-      </div>
-      <select class="form-select form-select-md" v-model="typeSelected" name="" id="">
+      <select
+        class="form-select form-select-md"
+        v-model="typeSelected"
+        name=""
+        id=""
+      >
         <option value="">Học kỳ</option>
-        <option v-for="item in termYear" :value="item.name" :key="item.id">
+        <option v-for="item in termYear" :value="item.id" :key="item.id">
           {{ item.name }}
         </option>
       </select>
@@ -36,7 +31,10 @@
     </div>
   </div>
   <div class="p-3 bg-light mt-3 shadow-lg rounded">
-    <div class="d-flex h-50 justify-content-center align-items-end" v-if="terms.length === 0">
+    <div
+      class="d-flex h-50 justify-content-center align-items-end"
+      v-if="terms.length === 0"
+    >
       <div class="d-flex flex-column gap-2">
         <span>Không có kỳ học nào để hiển thị</span>
         <button
@@ -64,7 +62,12 @@
           </tr>
         </thead>
         <tbody class="table-group-divider">
-          <tr v-for="item in terms" :key="item._id">
+          <tr
+            v-for="item in typeSelected == ''
+              ? terms
+              : terms.filter((e) => e.term == typeSelected)"
+            :key="item._id"
+          >
             <td scope="row">{{ item.schoolYear }}</td>
             <td>{{ item.term }}</td>
             <td>{{ moment(item.startDate) }}</td>
@@ -108,43 +111,47 @@
       </table>
     </div>
   </div>
-  <ModalRoom :item="itemSelected" :termYear="termYear" @refreshData="fetchData" />
+  <ModalRoom
+    :item="itemSelected"
+    :termYear="termYear"
+    @refreshData="fetchData"
+  />
 </template>
 
 <script>
-import BaseAPI from '@/config/axios.js'
-import ModalRoom from '@/views/admin/components/modals/TermModal.vue'
-import moment from 'moment'
+import BaseAPI from "@/config/axios.js";
+import ModalRoom from "@/views/admin/components/modals/TermModal.vue";
+import moment from "moment";
 export default {
   components: { ModalRoom },
   data() {
     return {
       terms: [],
       itemSelected: {},
-      typeSelected: '',
+      typeSelected: "",
       termYear: [
-        { id: 1, name: 'Học kỳ 1' },
-        { id: 2, name: 'Học kỳ 2' }
-      ]
-    }
+        { id: 1, name: "Học kỳ 1" },
+        { id: 2, name: "Học kỳ 2" },
+      ],
+    };
   },
   methods: {
     moment(date) {
-      return moment(new Date(date)).format('DD-MM-yyyy')
+      return moment(new Date(date)).format("DD-MM-yyyy");
     },
     setSelectedItem(item) {
-      this.itemSelected = { ...item }
+      this.itemSelected = { ...item };
     },
     fetchData() {
-      BaseAPI.get('/term')
+      BaseAPI.get("/term")
         .then(({ data }) => (this.terms = data))
-        .catch((err) => console.log(err))
-    }
+        .catch((err) => console.log(err));
+    },
   },
   mounted() {
-    this.fetchData()
-  }
-}
+    this.fetchData();
+  },
+};
 </script>
 
 <style scoped></style>
