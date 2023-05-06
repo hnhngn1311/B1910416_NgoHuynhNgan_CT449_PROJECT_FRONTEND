@@ -1,0 +1,30 @@
+@import './base.css';
+
+a,
+.green {
+  display: flex;
+  margin-bottom: 6px;
+  text-decoration: none;
+  color: white;
+  transition: 0.4s;
+}
+
+@media (hover: hover) {
+  a:hover {
+    display: flex;
+    background-color: rgba(0, 164, 237, 0.2);
+    color: white;
+  }
+}
+
+@media (min-width: 1024px) {
+  body {
+    display: flex;
+    place-items: center;
+  }
+
+  #app {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+}
