@@ -58,7 +58,6 @@
             <th>Bắt đầu</th>
             <th>Kết thúc</th>
             <th>Nội dung đặt phòng</th>
-            <th></th>
           </tr>
         </thead>
         <tbody class="table-group-divider">
@@ -77,40 +76,6 @@
             <td>{{ moment(item.startDate) }}</td>
             <td>{{ moment(item.endDate) }}</td>
             <td>{{ item.desc }}</td>
-            <td>
-              <div class="dropdown open d-flex justify-content-end">
-                <button
-                  type="button"
-                  class="btn"
-                  id="triggerId"
-                  data-bs-toggle="dropdown"
-                  aria-haspopup="true"
-                  aria-expanded="false"
-                  @click="setSelectedItem(item)"
-                >
-                  <img src="@/assets/gear.svg" class="img-fluid" alt="" />
-                </button>
-                <div class="dropdown-menu" aria-labelledby="triggerId">
-                  <button
-                    data-bs-toggle="modal"
-                    data-bs-target="#modalConfirm"
-                    class="dropdown-item"
-                    href="#"
-                  >
-                    Xoá
-                  </button>
-                  <button
-                    class="dropdown-item"
-                    data-bs-toggle="modal"
-                    data-bs-target="#modalEdit"
-                    href="#"
-                    @click="setSelectedItem(item)"
-                  >
-                    Sửa
-                  </button>
-                </div>
-              </div>
-            </td>
           </tr>
         </tbody>
         <tfoot></tfoot>

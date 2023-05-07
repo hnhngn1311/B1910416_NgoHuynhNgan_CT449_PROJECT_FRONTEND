@@ -56,7 +56,7 @@
       </ul>
       <hr />
       <div class="d-flex">
-        <button type="button" class="btn w-100 btn-outline-danger">Đăng xuất</button>
+        <button type="button" class="btn w-100 btn-outline-danger" @click="logOut">Đăng xuất</button>
       </div>
     </div>
   </div>
@@ -66,7 +66,13 @@
 import { RouterLink } from 'vue-router';
 
 export default {
-  components: { RouterLink }
+  components: { RouterLink },
+  methods: {
+    logOut(){
+      localStorage.removeItem('user');
+      this.$router.push('/')
+    }
+  }
 }
 </script>
 
